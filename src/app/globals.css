@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #090c11;
+  --bg: #F2F1EC;
   --surface: #10141b;
   --surface-raised: #161b24;
-  --text: #f1f3f5;
+  --text: #0A0A0A;
   --text-muted: #7a8699;
   --accent: #176bff;
   --accent-dim: #0f2d66;
@@ -24,7 +24,7 @@
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --color-positive: var(--positive);
-  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-sans: "Familjen Grotesk", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 

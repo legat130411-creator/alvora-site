@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
-import "@fontsource/ibm-plex-sans/400.css";
-import "@fontsource/ibm-plex-sans/500.css";
-import "@fontsource/ibm-plex-sans/600.css";
+import "@fontsource/fraunces/800.css";
+import "@fontsource/familjen-grotesk/400.css";
+import "@fontsource/familjen-grotesk/600.css";
 import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/500.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Alvora Capital — Algo Trading Strategy Builder",
+  title: "Alvora — Describe your idea. Get a tested bot.",
   description:
-    "Build your own algo strategy, test it on historical data, and connect it to your own exchange. Your funds never leave your account.",
+    "Describe a trading idea, see it tested on years of history, then run it on your own exchange account. Alvora cannot withdraw your funds.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
