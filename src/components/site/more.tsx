@@ -446,3 +446,124 @@ export function PricingDetails() {
     </Band>
   );
 }
+
+/* ---------- Home: about ---------- */
+
+const IS = ["A place to describe a trading idea in plain words", "A test of that idea on years of history", "A bot that runs it on your own exchange account"];
+const ISNT = ["A fund that pools money", "An adviser who tells you what to trade", "A custodian that holds your funds"];
+
+function WhatWeAre() {
+  const col = (title: string, items: string[], ok: boolean, d0: number) => (
+    <div>
+      <div className="text-sm opacity-60">{title}</div>
+      <ul className="mt-4 space-y-4">
+        {items.map((t, i) => (
+          <motion.li key={t} initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, margin: "-60px" }} transition={{ delay: d0 + i * 0.18, duration: 0.6, ease }} className="flex gap-3 leading-snug">
+            <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold" style={{ background: ok ? "#0B8F4A" : "#e8e7e1", color: ok ? "#fff" : "#8a8a84" }}>{ok ? "✓" : "×"}</span>
+            <span style={{ opacity: ok ? 1 : 0.6 }}>{t}</span>
+          </motion.li>
+        ))}
+      </ul>
+    </div>
+  );
+  return (
+    <div className="grid gap-8 rounded-[26px] p-6 sm:grid-cols-2 md:p-8" style={{ background: "#fff" }}>
+      {col("Alvora is", IS, true, 0)}
+      {col("Alvora is not", ISNT, false, 0.5)}
+    </div>
+  );
+}
+
+function arc(cx: number, cy: number, r: number, h0: number, h1: number) {
+  const a = (h: number) => ((h / 24) * 360 - 90) * (Math.PI / 180);
+  const [x0, y0, x1, y1] = [cx + r * Math.cos(a(h0)), cy + r * Math.sin(a(h0)), cx + r * Math.cos(a(h1)), cy + r * Math.sin(a(h1))];
+  return `M${x0},${y0} A${r},${r} 0 ${h1 - h0 > 12 ? 1 : 0} 1 ${x1},${y1}`;
+}
+
+function AroundTheClock() {
+  const cx = 150, cy = 150;
+  const sessions: [string, number, number, number][] = [["Asia", 0, 9, 112], ["Europe", 7, 16, 98], ["US", 13, 22, 84]];
+  return (
+    <div className="rounded-[26px] p-5 md:p-7" style={{ background: INK, color: "#fff" }}>
+      <div className="text-sm opacity-70">One day on a crypto exchange</div>
+      <svg viewBox="0 0 300 300" className="mx-auto mt-3 w-full max-w-[380px]" role="img" aria-label="A clock face showing three overlapping market sessions over 24 hours">
+        {Array.from({ length: 24 }, (_, h) => { const a = ((h / 24) * 360 - 90) * (Math.PI / 180); return <line key={h} x1={cx + 128 * Math.cos(a)} y1={cy + 128 * Math.sin(a)} x2={cx + (h % 6 ? 122 : 116) * Math.cos(a)} y2={cy + (h % 6 ? 122 : 116) * Math.sin(a)} stroke="#fff" strokeOpacity={h % 6 ? 0.3 : 0.7} strokeWidth={h % 6 ? 1 : 1.6} />; })}
+        {sessions.map(([n, a, b, r], i) => (
+          <motion.path key={n} d={arc(cx, cy, r, a, b)} fill="none" stroke={[P.accent, GOOD, "#fff"][i]} strokeOpacity={i === 2 ? 0.7 : 1} strokeWidth="9" strokeLinecap="round" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1.6, delay: i * 0.5, ease: "easeInOut" }} />
+        ))}
+        <motion.g animate={{ rotate: 360 }} transition={{ duration: 36, repeat: Infinity, ease: "linear" }} style={{ transformOrigin: `${cx}px ${cy}px` }}>
+          <line x1={cx} y1={cy} x2={cx} y2={cy - 122} stroke={BAD} strokeWidth="2" strokeLinecap="round" />
+          <circle cx={cx} cy={cy} r="4" fill={BAD} />
+        </motion.g>
+        <text x={cx} y={cy + 52} textAnchor="middle" fill="#fff" fillOpacity={0.5} fontSize="12">24 hours, no closing bell</text>
+      </svg>
+      <div className="mt-2 flex flex-wrap justify-center gap-4 text-xs">
+        {sessions.map(([n], i) => <span key={n} className="flex items-center gap-2 opacity-80"><i className="h-2 w-5 rounded" style={{ background: [P.accent, GOOD, "#fff"][i] }} />{n}</span>)}
+      </div>
+    </div>
+  );
+}
+
+function Regimes() {
+  const parts = useMemo(() => {
+    const trend = series(3, 32, 0.9, 1.6, 20), range = series(9, 34, 0, 2.2, trend[trend.length - 1]);
+    const drop = series(14, 14, -2.1, 1.8, range[range.length - 1]), calm = series(5, 20, 0.35, 1.2, drop[drop.length - 1]);
+    return [trend, range, drop, calm];
+  }, []);
+  const all = parts.flat(), W = 600, H = 220, n = all.length;
+  const min = Math.min(...all) - 3, max = Math.max(...all) + 3;
+  const path = toPath(all, W, H, min, max);
+  let acc = 0;
+  const bands = parts.map((p, i) => { const x0 = (acc / (n - 1)) * W; acc += p.length; const x1 = Math.min(((acc - 1) / (n - 1)) * W, W); return { x0, w: x1 - x0 + (i < 3 ? 0 : 0), label: ["trend", "sideways", "sharp drop", "recovery"][i], tint: ["#3ddc84", "#ffffff", "#ff5a4a", "#3ddc84"][i], o: [0.12, 0.07, 0.16, 0.08][i] }; });
+  return (
+    <div className="rounded-[26px] p-5 md:p-7" style={{ background: INK, color: "#fff" }}>
+      <div className="flex items-center justify-between text-sm"><span className="opacity-70">One price line, four moods</span><Tag>illustration</Tag></div>
+      <svg viewBox={`0 0 ${W} ${H + 24}`} className="mt-3 w-full" role="img" aria-label="A price line passing through a trend, a sideways stretch, a sharp drop and a recovery">
+        {bands.map((b, i) => (
+          <g key={b.label}>
+            <motion.rect x={b.x0} y={0} width={b.w} height={H} fill={b.tint} initial={{ opacity: 0 }} whileInView={{ opacity: b.o }} viewport={{ once: true }} transition={{ delay: 0.5 + i * 0.9, duration: 0.8 }} />
+            <motion.text x={b.x0 + b.w / 2} y={H + 17} textAnchor="middle" fill="#fff" fontSize="12" initial={{ opacity: 0 }} whileInView={{ opacity: 0.7 }} viewport={{ once: true }} transition={{ delay: 0.5 + i * 0.9 }}>{b.label}</motion.text>
+          </g>
+        ))}
+        <motion.path d={path} fill="none" stroke="#fff" strokeWidth="2.4" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 3.6, ease: "linear" }} />
+      </svg>
+    </div>
+  );
+}
+
+function TestedGrid() {
+  return (
+    <div className="rounded-[26px] p-5 md:p-7" style={{ background: "#fff" }}>
+      <div className="flex items-baseline justify-between"><span style={{ ...head, fontSize: "clamp(3rem,6vw,5rem)" }}>53</span><span className="text-sm opacity-60">strategies we tested ourselves</span></div>
+      <div className="mt-5 grid grid-cols-10 gap-2">
+        {Array.from({ length: 53 }, (_, i) => (
+          <motion.span key={i} className="aspect-square rounded-[6px]" style={{ background: i % 7 === 0 ? P.accent : i % 3 === 0 ? P.fg : "#cfcec8" }} initial={{ scale: 0, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.035, duration: 0.4, ease }} />
+        ))}
+      </div>
+      <div className="mt-4 text-sm opacity-60">Indicators, pairs of assets, price levels, volatility, time of day. Each square is one.</div>
+    </div>
+  );
+}
+
+export function AboutDetails() {
+  return (
+    <Band id="about">
+      <Block title="Software for people who trade their own money" scene={<WhatWeAre />}>
+        <p>Alvora is software. You describe an idea, we test it on history, and a bot runs it on an account that stays yours.</p>
+        <p>We do not pool money, hold funds or tell anyone what to buy. The ideas are yours, and so are the decisions. We build the part between a thought and a running bot.</p>
+      </Block>
+      <Block title="Markets that never close" scene={<AroundTheClock />} flip>
+        <p>Crypto exchanges trade every hour of every day. Asia, Europe and the US take turns, and prices move at 3 a.m. as readily as at noon.</p>
+        <p>A person has to sleep and look away. A rule written once keeps watching, and it acts only on the conditions you gave it.</p>
+      </Block>
+      <Block title="Prices change their character" scene={<Regimes />}>
+        <p>Markets spend long stretches trending, then drifting sideways, then dropping fast. An idea that suits one kind of stretch can struggle in another.</p>
+        <p>A test over many years is worth more than a test over one good month, because it shows your idea in all of them.</p>
+      </Block>
+      <Block title="Why we start from your idea" scene={<TestedGrid />} flip>
+        <p>Before building Alvora we tested more than fifty strategies ourselves. Some read indicators. Some watched how two assets move against each other. Some looked at the clock and the calendar.</p>
+        <p>They had so little in common that a menu of presets would have fitted none of them well. So Alvora starts from your description.</p>
+      </Block>
+    </Band>
+  );
+}

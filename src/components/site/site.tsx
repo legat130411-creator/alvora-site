@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { FONTS, PALETTES, Wall, onC } from "./tokens";
-import { HowDetails, SecurityDetails, PricingDetails } from "./more";
+import { AboutDetails, HowDetails, SecurityDetails, PricingDetails } from "./more";
 import { Story, Security, PricingSlider, Faq, Footer, KeyCard } from "./sections";
 
 const P = PALETTES.bone, F = FONTS.fraunces;
@@ -48,6 +48,10 @@ export function HomeHero() {
         <p className="mt-6 max-w-lg text-lg leading-snug opacity-85">Tell the AI how you want to trade. It asks what&apos;s missing and shows the backtest. The bot then runs on your own exchange account, and Alvora cannot withdraw your funds.</p>
         <div className="mt-9"><StartButton big /></div>
       </motion.div>
+      <a href="#about" className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1 rounded-full px-4 py-2 text-sm" style={{ background: P.bg, color: P.fg }} aria-label="Read about Alvora">
+        <span>About Alvora</span>
+        <motion.svg width="16" height="16" viewBox="0 0 16 16" fill="none" animate={{ y: [0, 4, 0] }} transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}><path d="M3 6l5 5 5-5" stroke={P.fg} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></motion.svg>
+      </a>
     </section>
   );
 }
@@ -72,7 +76,18 @@ export function PageTitle({ title, sub }: { title: string; sub: string }) {
   );
 }
 
-export function HomePage() { return (<><Header /><HomeHero /><Footer c={c} /></>); }
+export function ProcessCta() {
+  return (
+    <section className="px-6 py-24 text-center md:px-10" style={{ background: P.card, color: onC(P.card) }}>
+      <h2 style={{ ...head, fontSize: "clamp(2.2rem,4.6vw,4.8rem)", textWrap: "balance" }}>See what happens after you describe an idea.</h2>
+      <div className="mt-8">
+        <Link href="/how-it-works" className="inline-flex items-center rounded-full px-10 py-5 text-xl font-semibold transition-transform hover:scale-[1.04]" style={{ background: P.fg, color: "#fff", fontFamily: F.body }}>See the process</Link>
+      </div>
+    </section>
+  );
+}
+
+export function HomePage() { return (<><Header /><HomeHero /><AboutDetails /><ProcessCta /><Footer c={c} /></>); }
 export function HowPage() { return (<><Header active="/how-it-works" /><Story c={c} /><HowDetails /><Faq c={c} /><CtaBand /><Footer c={c} /></>); }
 export function SecurityPage() {
   return (
