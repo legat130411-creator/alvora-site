@@ -7,8 +7,8 @@ export type Palette = { bg: string; fg: string; accent: string; muted: string; h
 export const PALETTES: Record<string, Palette> = {
   bone:    { bg: "#F2F1EC", fg: "#0A0A0A", accent: "#176BFF", muted: "#6b6b66", hue: [0.58, 0.62], tint: [0.0, 0.3, 1], card: "#ffffff", dark: false },
 };
-export const FONTS: Record<string, { head: string; body: string; weight: number; track: string; upper?: boolean }> = {
-  fraunces:  { head: "'Fraunces'", body: "'Familjen Grotesk'", weight: 800, track: "-0.04em" },
+export const FONTS: Record<string, { head: string; body: string; weight: number | string; track: string; upper?: boolean }> = {
+  fraunces:  { head: "var(--font-head, 'Bricolage Grotesque')", body: "'Familjen Grotesk'", weight: "var(--head-weight, 800)", track: "var(--head-track, -0.04em)" },
 };
 
 export function Wall({ p }: { p: Palette }) {

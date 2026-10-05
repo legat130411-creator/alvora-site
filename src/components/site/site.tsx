@@ -44,7 +44,7 @@ export function HomeHero() {
     <section className="relative isolate flex w-full items-center justify-center overflow-hidden px-6" style={{ background: P.bg, color: P.fg, height: "calc(100vh - 73px)", minHeight: 560, fontFamily: F.body }}>
       <Wall p={P} />
       <motion.div initial={{ scale: 0.94, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.8, ease: [0.2, 0.7, 0.2, 1] }} className="relative z-10 max-w-3xl rounded-[28px] p-8 md:p-12" style={{ background: P.bg }}>
-        <h1 style={{ ...head, fontSize: "clamp(2.6rem,5.6vw,5.8rem)", textWrap: "balance" }}>Describe your idea. Get a tested bot.</h1>
+        <h1 style={{ ...head, fontSize: "calc(clamp(2.6rem,5.6vw,5.8rem) * var(--head-scale, 1))", textWrap: "balance" }}>Describe your idea. Get a tested bot.</h1>
         <p className="mt-6 max-w-lg text-lg leading-snug opacity-85">Tell the AI how you want to trade. It asks what&apos;s missing and shows the backtest. The bot then runs on your own exchange account, and Alvora cannot withdraw your funds.</p>
         <div className="mt-9"><StartButton big /></div>
       </motion.div>
@@ -59,7 +59,7 @@ export function HomeHero() {
 export function CtaBand() {
   return (
     <section className="px-6 py-24 text-center md:px-10" style={{ background: P.card, color: onC(P.card) }}>
-      <h2 style={{ ...head, fontSize: "clamp(2.2rem,4.6vw,4.8rem)" }}>Describe your first idea.</h2>
+      <h2 style={{ ...head, fontSize: "calc(clamp(2.2rem,4.6vw,4.8rem) * var(--head-scale, 1))" }}>Describe your first idea.</h2>
       <div className="mt-8"><StartButton big /></div>
     </section>
   );
@@ -69,7 +69,7 @@ export function PageTitle({ title, sub }: { title: string; sub: string }) {
   return (
     <section className="px-6 pb-6 pt-20 md:px-10" style={{ background: P.bg, color: P.fg }}>
       <div className="mx-auto max-w-6xl">
-        <motion.h1 initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8 }} style={{ ...head, fontSize: "clamp(2.8rem,7vw,7.5rem)", textWrap: "balance" }}>{title}</motion.h1>
+        <motion.h1 initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8 }} style={{ ...head, fontSize: "calc(clamp(2.8rem,7vw,7.5rem) * var(--head-scale, 1))", textWrap: "balance" }}>{title}</motion.h1>
         <p className="mt-6 max-w-xl text-xl leading-snug opacity-80" style={{ fontFamily: F.body }}>{sub}</p>
       </div>
     </section>
@@ -79,7 +79,7 @@ export function PageTitle({ title, sub }: { title: string; sub: string }) {
 export function ProcessCta() {
   return (
     <section className="px-6 py-24 text-center md:px-10" style={{ background: P.card, color: onC(P.card) }}>
-      <h2 style={{ ...head, fontSize: "clamp(2.2rem,4.6vw,4.8rem)", textWrap: "balance" }}>See what happens after you describe an idea.</h2>
+      <h2 style={{ ...head, fontSize: "calc(clamp(2.2rem,4.6vw,4.8rem) * var(--head-scale, 1))", textWrap: "balance" }}>See what happens after you describe an idea.</h2>
       <div className="mt-8">
         <Link href="/how-it-works" className="inline-flex items-center rounded-full px-10 py-5 text-xl font-semibold transition-transform hover:scale-[1.04]" style={{ background: P.fg, color: "#fff", fontFamily: F.body }}>See the process</Link>
       </div>

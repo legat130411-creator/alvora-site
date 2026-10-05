@@ -14,7 +14,7 @@ function Block({ title, children, scene, flip = false }: { title: string; childr
   return (
     <div className="mx-auto grid w-full max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16">
       <motion.div initial={{ y: 40, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, margin: "-80px" }} transition={{ duration: 0.8, ease }} className={flip ? "md:order-2" : ""}>
-        <h3 style={{ ...head, fontSize: "clamp(1.9rem,3.2vw,3.2rem)", textWrap: "balance" }}>{title}</h3>
+        <h3 style={{ ...head, fontSize: "calc(clamp(1.9rem,3.2vw,3.2rem) * var(--head-scale, 1))", textWrap: "balance" }}>{title}</h3>
         <div className="mt-5 max-w-md space-y-4 text-lg leading-snug opacity-85">{children}</div>
       </motion.div>
       <div className={flip ? "md:order-1" : ""}>{scene}</div>
@@ -67,7 +67,7 @@ export function IdeasStrip() {
   return (
     <section className="overflow-hidden py-20 md:py-28" style={{ background: P.bg, color: P.fg, fontFamily: F.body }}>
       <div className="mx-auto max-w-6xl px-6 md:px-10">
-        <h3 style={{ ...head, fontSize: "clamp(1.9rem,3.2vw,3.2rem)" }}>What you can describe</h3>
+        <h3 style={{ ...head, fontSize: "calc(clamp(1.9rem,3.2vw,3.2rem) * var(--head-scale, 1))" }}>What you can describe</h3>
         <p className="mt-5 max-w-xl text-lg leading-snug opacity-85">Anything you could explain to another trader. If the idea is clear enough to follow without guessing, the AI can test it. These are a few that people type.</p>
       </div>
       <div className="mt-12 space-y-3">
@@ -327,9 +327,9 @@ function MoneyMap() {
       <div className="text-sm opacity-70">Where the money is, and what moves</div>
       <svg viewBox={`0 0 ${W} ${H}`} className="mt-3 w-full" role="img" aria-label="Diagram: Alvora sends orders to your exchange account, funds cannot flow back">
         <rect x="10" y="100" width="150" height="80" rx="18" fill="#1c1e24" stroke="#ffffff30" />
-        <text x="85" y="146" textAnchor="middle" fill="#fff" fontSize="20" fontFamily={F.head}>Alvora</text>
+        <text x="85" y="146" textAnchor="middle" fill="#fff" fontSize="20" style={{ fontFamily: F.head }}>Alvora</text>
         <rect x="400" y="60" width="190" height="160" rx="22" fill="#1c1e24" stroke={GOOD} strokeOpacity={0.7} />
-        <text x="495" y="132" textAnchor="middle" fill="#fff" fontSize="19" fontFamily={F.head}>Your exchange</text>
+        <text x="495" y="132" textAnchor="middle" fill="#fff" fontSize="19" style={{ fontFamily: F.head }}>Your exchange</text>
         <text x="495" y="156" textAnchor="middle" fill={GOOD} fontSize="14">your funds stay here</text>
         <path d="M160 128 L400 128" stroke="#ffffff55" strokeWidth="1.5" />
         <text x="280" y="116" textAnchor="middle" fill="#fff" fillOpacity={0.7} fontSize="13">orders</text>
@@ -396,7 +396,7 @@ export function SecurityDetails() {
           <p>Delete the key in the example and see what Alvora loses.</p>
         </Block>
         <div className="mx-auto w-full max-w-6xl">
-          <h3 style={{ ...head, fontSize: "clamp(1.9rem,3.2vw,3.2rem)" }}>Risks that remain</h3>
+          <h3 style={{ ...head, fontSize: "calc(clamp(1.9rem,3.2vw,3.2rem) * var(--head-scale, 1))" }}>Risks that remain</h3>
           <p className="mt-5 max-w-xl text-lg leading-snug opacity-85">Trading involves risk of loss. Alvora cannot take your funds, but it cannot make a bad idea good either.</p>
           <div className="mt-10 grid gap-4 md:grid-cols-4">
             {RISKS.map(([t, d], i) => (

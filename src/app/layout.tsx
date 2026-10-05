@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "@fontsource/fraunces/800.css";
+import "@fontsource/bricolage-grotesque/800.css";
 import "@fontsource/familjen-grotesk/400.css";
 import "@fontsource/familjen-grotesk/600.css";
 import "@fontsource/ibm-plex-mono/400.css";

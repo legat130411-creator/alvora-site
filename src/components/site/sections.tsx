@@ -5,7 +5,7 @@ import { FONTS, onC, type Palette } from "./tokens";
 import { ChatDemo } from "./chat";
 
 type Ctx = { p: Palette; f: (typeof FONTS)[string] };
-const hd = (c: Ctx, size: string): React.CSSProperties => ({ fontFamily: c.f.head, fontWeight: c.f.weight, letterSpacing: c.f.track, textTransform: c.f.upper ? "uppercase" : undefined, lineHeight: 0.95, fontSize: `calc(${size} * ${/Syne|Unbounded|Archivo/.test(c.f.head) ? 1 : 1.3})` });
+const hd = (c: Ctx, size: string): React.CSSProperties => ({ fontFamily: c.f.head, fontWeight: c.f.weight, letterSpacing: c.f.track, textTransform: c.f.upper ? "uppercase" : undefined, lineHeight: 0.95, fontSize: `calc(${size} * ${/Syne|Unbounded|Archivo/.test(c.f.head) ? 1 : 1.3} * var(--head-scale, 1))` });
 const btn = (c: Ctx): React.CSSProperties => ({ background: c.p.accent, color: onC(c.p.accent) });
 
 const reveal = { initial: { y: 50, opacity: 0 }, whileInView: { y: 0, opacity: 1 }, viewport: { once: true, margin: "-80px" }, transition: { duration: 0.8, ease: [0.2, 0.7, 0.2, 1] as const } };
