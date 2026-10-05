@@ -491,10 +491,11 @@ function AroundTheClock() {
         {sessions.map(([n, a, b, r], i) => (
           <motion.path key={n} d={arc(cx, cy, r, a, b)} fill="none" stroke={[P.accent, GOOD, "#fff"][i]} strokeOpacity={i === 2 ? 0.7 : 1} strokeWidth="9" strokeLinecap="round" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 1.6, delay: i * 0.5, ease: "easeInOut" }} />
         ))}
-        <motion.g animate={{ rotate: 360 }} transition={{ duration: 36, repeat: Infinity, ease: "linear" }} style={{ transformOrigin: `${cx}px ${cy}px` }}>
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from={`0 ${cx} ${cy}`} to={`360 ${cx} ${cy}`} dur="60s" repeatCount="indefinite" />
           <line x1={cx} y1={cy} x2={cx} y2={cy - 122} stroke={BAD} strokeWidth="2" strokeLinecap="round" />
-          <circle cx={cx} cy={cy} r="4" fill={BAD} />
-        </motion.g>
+        </g>
+        <circle cx={cx} cy={cy} r="5" fill={BAD} />
         <text x={cx} y={cy + 52} textAnchor="middle" fill="#fff" fillOpacity={0.5} fontSize="12">24 hours, no closing bell</text>
       </svg>
       <div className="mt-2 flex flex-wrap justify-center gap-4 text-xs">
@@ -531,16 +532,47 @@ function Regimes() {
   );
 }
 
-function TestedGrid() {
+const COND_N = 48;
+
+function Conditions() {
+  const W = 600, H = 220, D = 10;
+  const { candles, buys, sells, min, max } = useMemo(() => {
+    const close = series(8, COND_N + 1, 0.05, 5.5, 50), jit = series(33, COND_N, 0, 3.2, 0);
+    const cs = Array.from({ length: COND_N }, (_, i) => {
+      const o = close[i], c = close[i + 1], w1 = Math.abs(jit[i] - (jit[i - 1] ?? 0)) * 0.5 + 0.6, w2 = Math.abs(jit[i] - (jit[i - 2] ?? 0)) * 0.4 + 0.6;
+      return { o, c, h: Math.max(o, c) + w1, l: Math.min(o, c) - w2 };
+    });
+    const pick = (from: number, to: number, low: boolean) => { let k = from; for (let i = from; i <= to; i++) if (low ? cs[i].l < cs[k].l : cs[i].h > cs[k].h) k = i; return k; };
+    const bu = [pick(4, 11, true), pick(19, 26, true), pick(34, 40, true)], se = [pick(12, 18, false), pick(27, 33, false), pick(41, 47, false)];
+    return { candles: cs, buys: bu, sells: se, min: Math.min(...cs.map((x) => x.l)) - 2, max: Math.max(...cs.map((x) => x.h)) + 2 };
+  }, []);
+  const bw = W / COND_N, x = (i: number) => i * bw + bw / 2, y = (v: number) => H - ((v - min) / (max - min)) * H;
+  const mark = (i: number, up: boolean) => {
+    const f = Math.min(0.94, (i + 0.5) / COND_N), col = up ? GOOD : BAD;
+    const cy = up ? y(candles[i].l) + 14 : y(candles[i].h) - 14;
+    return (
+      <motion.path key={(up ? "b" : "s") + i} d={up ? `M${x(i)},${cy - 7} l7,12 h-14 z` : `M${x(i)},${cy + 7} l7,-12 h-14 z`} fill={col}
+        initial={{ opacity: 0 }} animate={{ opacity: [0, 0, 1, 1, 0] }} transition={{ duration: D, times: [0, f, Math.min(f + 0.03, 0.97), 0.97, 1], repeat: Infinity, ease: "linear" }} />
+    );
+  };
   return (
-    <div className="rounded-[26px] p-5 md:p-7" style={{ background: "#fff" }}>
-      <div className="flex items-baseline justify-between"><span style={{ ...head, fontSize: "clamp(3rem,6vw,5rem)" }}>53</span><span className="text-sm opacity-60">strategies we tested ourselves</span></div>
-      <div className="mt-5 grid grid-cols-10 gap-2">
-        {Array.from({ length: 53 }, (_, i) => (
-          <motion.span key={i} className="aspect-square rounded-[6px]" style={{ background: i % 7 === 0 ? P.accent : i % 3 === 0 ? P.fg : "#cfcec8" }} initial={{ scale: 0, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.035, duration: 0.4, ease }} />
+    <div className="rounded-[26px] p-5 md:p-7" style={{ background: INK, color: "#fff" }}>
+      <div className="flex items-center justify-between text-sm"><span className="opacity-70">An idea, checked against every candle</span><Tag>illustration</Tag></div>
+      <svg viewBox={`0 0 ${W} ${H}`} className="mt-4 w-full" role="img" aria-label="Candles with entry and exit markers appearing where the conditions are met">
+        {candles.map((c, i) => (
+          <g key={i}>
+            <line x1={x(i)} x2={x(i)} y1={y(c.h)} y2={y(c.l)} stroke={c.c >= c.o ? GOOD : BAD} strokeOpacity={0.55} strokeWidth="1.3" />
+            <rect x={x(i) - bw * 0.3} y={y(Math.max(c.o, c.c))} width={bw * 0.6} height={Math.max(2, Math.abs(y(c.o) - y(c.c)))} rx="1" fill={c.c >= c.o ? GOOD : BAD} fillOpacity={0.55} />
+          </g>
         ))}
-      </div>
-      <div className="mt-4 text-sm opacity-60">Indicators, pairs of assets, price levels, volatility, time of day. Each square is one.</div>
+        {buys.map((i) => mark(i, true))}
+        {sells.map((i) => mark(i, false))}
+        <motion.line y1={0} y2={H} stroke="#fff" strokeOpacity={0.35} strokeWidth="1.5" initial={{ x1: 0, x2: 0 }} animate={{ x1: [0, W], x2: [0, W] }} transition={{ duration: D, repeat: Infinity, ease: "linear" }} />
+      </svg>
+      <ul className="mt-4 space-y-2 text-[15px]">
+        <li className="flex items-center gap-3"><span style={{ color: GOOD }}>▲</span><span className="opacity-90">Buy when RSI is below 30 and price is above the 200 EMA</span></li>
+        <li className="flex items-center gap-3"><span style={{ color: BAD }}>▼</span><span className="opacity-90">Sell when RSI is back above 55</span></li>
+      </ul>
     </div>
   );
 }
@@ -560,9 +592,9 @@ export function AboutDetails() {
         <p>Markets spend long stretches trending, then drifting sideways, then dropping fast. An idea that suits one kind of stretch can struggle in another.</p>
         <p>A test over many years is worth more than a test over one good month, because it shows your idea in all of them.</p>
       </Block>
-      <Block title="Why we start from your idea" scene={<TestedGrid />} flip>
-        <p>Before building Alvora we tested more than fifty strategies ourselves. Some read indicators. Some watched how two assets move against each other. Some looked at the clock and the calendar.</p>
-        <p>They had so little in common that a menu of presets would have fitted none of them well. So Alvora starts from your description.</p>
+      <Block title="An idea is a set of conditions" scene={<Conditions />} flip>
+        <p>However loosely you put it, an idea comes down to conditions: when this and that are true, do this. That is the part a bot can follow without guessing.</p>
+        <p>If a condition is missing, the AI asks until each one is clear. That is why you begin with your own words.</p>
       </Block>
     </Band>
   );
