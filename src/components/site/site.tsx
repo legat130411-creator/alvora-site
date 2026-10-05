@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { FONTS, PALETTES, Wall, onC } from "./tokens";
+import { HowDetails, SecurityDetails, PricingDetails } from "./more";
 import { Story, Security, PricingSlider, Faq, Footer, KeyCard } from "./sections";
 
 const P = PALETTES.bone, F = FONTS.fraunces;
@@ -72,7 +73,7 @@ export function PageTitle({ title, sub }: { title: string; sub: string }) {
 }
 
 export function HomePage() { return (<><Header /><HomeHero /><Footer c={c} /></>); }
-export function HowPage() { return (<><Header active="/how-it-works" /><Story c={c} /><Faq c={c} /><CtaBand /><Footer c={c} /></>); }
+export function HowPage() { return (<><Header active="/how-it-works" /><Story c={c} /><HowDetails /><Faq c={c} /><CtaBand /><Footer c={c} /></>); }
 export function SecurityPage() {
   return (
     <>
@@ -88,6 +89,7 @@ export function SecurityPage() {
           <KeyCard c={c} />
         </div>
       </section>
+      <SecurityDetails />
       <CtaBand /><Footer c={c} />
     </>
   );
@@ -98,6 +100,7 @@ export function PricingPage() {
       <Header active="/pricing" />
       <PageTitle title="One subscription. No share of your profit." sub="The plan depends on the size of the account you connect. Prices will be announced before launch." />
       <PricingSlider c={c} />
+      <PricingDetails />
       <CtaBand /><Footer c={c} />
     </>
   );
