@@ -436,12 +436,82 @@ function CostCompare() {
   );
 }
 
+function PlanBars() {
+  const rows = [["Start", 2, 15], ["Plus", 5, 40], ["Pro", 10, 100]] as const;
+  return (
+    <div className="rounded-[26px] p-6 md:p-8" style={{ background: INK, color: "#fff" }}>
+      <div className="grid grid-cols-[3.5rem_1fr] gap-x-4 gap-y-6">
+        {rows.map(([n, bots, ideas], i) => (
+          <React.Fragment key={n}>
+            <div style={{ ...head, fontSize: "calc(1.4rem * var(--head-scale, 1))" }} className="pt-1">{n}</div>
+            <div className="space-y-3">
+              {[["bots at once", bots, 10, P.accent], ["AI ideas a month", ideas, 100, "#ffffff80"]].map(([l, v, mx, col]) => (
+                <div key={String(l)}>
+                  <div className="flex justify-between text-xs opacity-70"><span>{l as string}</span><span className="tabular-nums">{v as number}</span></div>
+                  <div className="mt-1 h-2 rounded-full" style={{ background: "#ffffff18" }}>
+                    <motion.div className="h-2 rounded-full" style={{ background: col as string }} initial={{ width: 0 }} whileInView={{ width: `${((v as number) / (mx as number)) * 100}%` }} viewport={{ once: true }} transition={{ duration: 1.1, delay: 0.15 * i, ease }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AddOns() {
+  const items = [["One more bot", "$5 a month"], ["20 more AI ideas", "$7"], ["One more exchange", "$10 a month"]] as const;
+  return (
+    <div className="rounded-[26px] p-6 md:p-8" style={{ background: INK, color: "#fff" }}>
+      <div className="text-sm opacity-60">Add to any plan</div>
+      <div className="mt-4 divide-y" style={{ borderColor: "#ffffff22" }}>
+        {items.map(([a, b], i) => (
+          <motion.div key={a} initial={{ x: 24, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.12, ease }} className="flex items-center justify-between gap-4 border-t py-4 first:border-t-0" style={{ borderColor: "#ffffff22" }}>
+            <span style={{ ...head, fontSize: "calc(1.5rem * var(--head-scale, 1))" }}>{a}</span>
+            <span className="tabular-nums opacity-80">{b}</span>
+          </motion.div>
+        ))}
+      </div>
+      <p className="mt-4 text-xs opacity-50">The extra exchange is for Plus and Pro.</p>
+    </div>
+  );
+}
+
+function ExchangeList() {
+  const ex = ["Coinbase", "Kraken", "Gemini"];
+  return (
+    <div className="rounded-[26px] p-6 md:p-8" style={{ background: INK, color: "#fff" }}>
+      <div className="text-sm opacity-60">Connect at launch</div>
+      <div className="mt-4 space-y-3">
+        {ex.map((e, i) => (
+          <motion.div key={e} initial={{ y: 20, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: i * 0.12, ease }} className="flex items-center justify-between rounded-2xl px-5 py-4" style={{ background: "#ffffff12" }}>
+            <span style={{ ...head, fontSize: "calc(1.7rem * var(--head-scale, 1))" }}>{e}</span>
+            <span className="flex items-center gap-2 text-sm opacity-80"><i className="h-2 w-2 rounded-full" style={{ background: GOOD }} />trade-only key</span>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function PricingDetails() {
   return (
     <Band>
-      <Block title="How the plan is chosen" scene={<CostCompare />}>
-        <p>The plan depends on the size of the account you connect. Alvora does not take a share of your profit, and the subscription stays the same whether your bot makes money or not.</p>
-        <p>Prices will be announced before launch.</p>
+      <Block title="What a plan is built around" scene={<PlanBars />}>
+        <p>Bots and exchanges set how much runs at once. AI ideas set how much you can ask the AI to build in a month.</p>
+        <p>Testing an idea again does not use up ideas. Change a rule, run the test, and repeat as often as you like.</p>
+      </Block>
+      <Block title="Add what you need" scene={<AddOns />} flip>
+        <p>One more bot, or a busy month of ideas? Add it to your plan without moving up a tier. Add-ons are billed with your subscription.</p>
+      </Block>
+      <Block title="The price does not follow your results" scene={<CostCompare />}>
+        <p>The subscription stays the same whether your bot makes money or not. Alvora does not take a share of your profit.</p>
+        <p>Yearly billing is ten months for twelve.</p>
+      </Block>
+      <Block title="Your exchange, your account" scene={<ExchangeList />} flip>
+        <p>Alvora connects to Coinbase, Kraken and Gemini. You keep your own account there and create the API key yourself, with trading rights and no withdrawals.</p>
       </Block>
     </Band>
   );

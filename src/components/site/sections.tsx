@@ -88,30 +88,8 @@ export function Security({ c }: { c: Ctx }) {
   );
 }
 
-export function PricingSlider({ c }: { c: Ctx }) {
-  const tiers = [{ n: "Starter", max: 5000, bots: "" }, { n: "Growth", max: 50000, bots: "" }, { n: "Pro", max: 1e6, bots: "" }];
-  const [v, setV] = useState(12);
-  const acct = Math.round(Math.pow(10, 2.7 + (v / 100) * 3.3));
-  const t = tiers.find((x) => acct <= x.max)!;
-  return (
-    <section style={{ background: c.p.bg, color: c.p.fg }} className="px-6 py-24 md:px-10">
-      <div className="mx-auto max-w-6xl">
-        <h2 style={hd(c, "clamp(2rem,3.7vw,3.8rem)")}>The plan follows your account size.</h2>
-        <p className="mt-4 max-w-md opacity-80">No share of profit. You pay a flat subscription, and the tier depends on how much capital the connected account holds.</p>
-        <div className="mt-12 rounded-[28px] p-8 md:p-12" style={{ background: c.p.card, color: onC(c.p.card) }}>
-          <div className="flex flex-wrap items-end justify-between gap-6">
-            <div><div className="text-sm opacity-70">connected account</div><div style={hd(c, "clamp(2.6rem,6vw,6rem)")} className="tabular-nums">${acct.toLocaleString("en-US")}</div></div>
-            <AnimatePresence mode="wait"><motion.div key={t.n} initial={{ y: 30, opacity: 0, rotate: -3 }} animate={{ y: 0, opacity: 1, rotate: 0 }} exit={{ y: -30, opacity: 0 }} className="rounded-2xl px-6 py-4 text-right" style={btn(c)}><div style={hd(c, "2.4rem")}>{t.n}</div><div className="text-sm opacity-80">price to be announced</div></motion.div></AnimatePresence>
-          </div>
-          <input type="range" min={0} max={100} value={v} onChange={(e) => setV(+e.target.value)} className="mt-10 w-full" style={{ accentColor: c.p.accent }} aria-label="account size" />
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function Faq({ c }: { c: Ctx }) {
-  const q = [["Can Alvora withdraw my funds?", "No. The key you create on your exchange has trading rights only. A key with withdrawals switched on is rejected when you connect it."], ["Do you take a share of profit?", "No. You pay a flat subscription, and the plan depends on the size of the connected account."], ["Do I need to write code?", "No. You describe the idea in plain words, and the AI asks questions until it is clear."], ["Can I change the strategy later?", "Yes. Describe the change, run the test again and decide if it goes live."], ["What if the test looks great?", "Past results do not promise future ones. The test shows how your idea behaved on history, nothing more."]];
+  const q = [["Can Alvora withdraw my funds?", "No. The key you create on your exchange has trading rights only. A key with withdrawals switched on is rejected when you connect it."], ["Do you take a share of profit?", "No. You pay a flat subscription. A larger plan means more bots, exchanges and AI ideas a month, and it costs the same whether your bots make money or not."], ["Which exchanges can I use?", "Coinbase, Kraken and Gemini. You keep your own account there and create the key yourself."], ["Do I need to write code?", "No. You describe the idea in plain words, and the AI asks questions until it is clear."], ["Can I change the strategy later?", "Yes. Describe the change, run the test again and decide if it goes live."], ["What if the test looks great?", "Past results do not promise future ones. The test shows how your idea behaved on history, nothing more."]];
   const [o, setO] = useState(0);
   return (
     <section style={{ background: c.p.bg, color: c.p.fg }} className="px-6 py-24 md:px-10">

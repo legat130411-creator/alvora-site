@@ -1,10 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { FONTS, PALETTES, Wall, onC } from "./tokens";
 import { AboutDetails, HowDetails, SecurityDetails, PricingDetails } from "./more";
-import { Story, Security, PricingSlider, Faq, Footer, KeyCard } from "./sections";
+import { Story, Security, Faq, Footer, KeyCard } from "./sections";
 
 const P = PALETTES.bone, F = FONTS.fraunces;
 const c = { p: P, f: F };
@@ -109,12 +109,69 @@ export function SecurityPage() {
     </>
   );
 }
+const PLANS = [
+  { n: "Start", price: 19, blurb: "For your first bots.", rows: [["Bots at once", "2"], ["Exchanges", "1"], ["AI ideas a month", "15"], ["Test reruns", "No limit"], ["Price history", "Daily and hourly"], ["Alerts", "Email"], ["Support", "Email"]] },
+  { n: "Plus", price: 39, blurb: "For a small set of bots.", dark: true, rows: [["Bots at once", "5"], ["Exchanges", "2"], ["AI ideas a month", "40"], ["Test reruns", "No limit"], ["Price history", "Down to the minute"], ["Alerts", "Email and Telegram"], ["Support", "Email"]] },
+  { n: "Pro", price: 59, blurb: "For a larger setup.", rows: [["Bots at once", "10"], ["Exchanges", "3"], ["AI ideas a month", "100"], ["Test reruns", "No limit"], ["Price history", "Down to the minute"], ["Alerts", "Email and Telegram"], ["Support", "Priority"]] },
+] as const;
+
+function PricingPlans() {
+  const [yearly, setYearly] = useState(false);
+  return (
+    <section className="px-6 pb-20 pt-10 md:px-10" style={{ background: P.bg, color: P.fg, fontFamily: F.body }}>
+      <div className="mx-auto max-w-6xl">
+        <div className="inline-flex rounded-full p-1" style={{ background: "#0000000f" }} role="group" aria-label="Billing period">
+          {[["Monthly", false], ["Yearly, 2 months free", true]].map(([l, y]) => (
+            <button key={String(l)} onClick={() => setYearly(y as boolean)} aria-pressed={yearly === y} className="relative rounded-full px-5 py-2 text-sm font-semibold">
+              {yearly === y && <motion.span layoutId="billing" className="absolute inset-0 rounded-full" style={{ background: P.fg }} transition={{ type: "spring", stiffness: 400, damping: 34 }} />}
+              <span className="relative" style={{ color: yearly === y ? P.bg : P.fg }}>{l as string}</span>
+            </button>
+          ))}
+        </div>
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
+          {PLANS.map((pl, i) => {
+            const dark = "dark" in pl && pl.dark;
+            const fg = dark ? "#fff" : P.fg;
+            return (
+              <motion.div key={pl.n} initial={{ y: 40, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.7, delay: i * 0.08 }} className="flex flex-col rounded-[28px] p-7 md:p-8" style={{ background: dark ? "#0A0A0A" : P.card, color: fg }}>
+                <div style={{ ...head, fontSize: "calc(2rem * var(--head-scale, 1))" }}>{pl.n}</div>
+                <p className="mt-1 text-sm opacity-65">{pl.blurb}</p>
+                <div className="mt-6 flex items-baseline gap-2">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span key={String(yearly)} initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }} transition={{ duration: 0.22 }} className="tabular-nums" style={{ ...head, fontSize: "calc(4rem * var(--head-scale, 1))" }}>${yearly ? pl.price * 10 : pl.price}</motion.span>
+                  </AnimatePresence>
+                  <span className="text-sm opacity-65">{yearly ? "a year" : "a month"}</span>
+                </div>
+                <div className="mt-1 h-5 text-sm opacity-65">{yearly ? `Pay for 10 months, use 12. That is $${(pl.price * 10 / 12).toFixed(2)} a month.` : ""}</div>
+                <ul className="mt-6 flex-1">
+                  {pl.rows.map(([k, v]) => (
+                    <li key={k} className="flex items-baseline justify-between gap-4 border-t py-3 text-[15px]" style={{ borderColor: fg + "22" }}><span className="opacity-65">{k}</span><span className="text-right font-semibold">{v}</span></li>
+                  ))}
+                </ul>
+                <a href={APP + "/signup"} className="mt-6 inline-flex justify-center rounded-full px-6 py-3.5 font-semibold transition-transform hover:scale-[1.03]" style={{ background: dark ? P.accent : P.fg, color: dark ? onC(P.accent) : P.bg }}>Choose {pl.n}</a>
+              </motion.div>
+            );
+          })}
+        </div>
+        <div className="mt-5 flex flex-col items-start justify-between gap-5 rounded-[28px] p-7 md:flex-row md:items-center md:p-8" style={{ background: P.card }}>
+          <div>
+            <div style={{ ...head, fontSize: "calc(1.8rem * var(--head-scale, 1))" }}>Try it before you pay.</div>
+            <p className="mt-2 max-w-xl opacity-75">Describe two ideas and see their backtests. No card needed. Running a bot starts on a paid plan.</p>
+          </div>
+          <StartButton label="Try two ideas" />
+        </div>
+        <p className="mt-6 text-sm opacity-60">Pay by card. Alvora does not take a share of your profit.</p>
+      </div>
+    </section>
+  );
+}
+
 export function PricingPage() {
   return (
     <>
       <Header active="/pricing" />
-      <PageTitle title="One subscription. No share of your profit." sub="The plan depends on the size of the account you connect. Prices will be announced before launch." />
-      <PricingSlider c={c} />
+      <PageTitle title="One subscription. No share of your profit." sub="Choose a plan by how many bots, exchanges and ideas you need. Pay monthly or yearly by card." />
+      <PricingPlans />
       <PricingDetails />
       <CtaBand /><Footer c={c} />
     </>
